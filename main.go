@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/rubyc/rubyc/internal/compiler"
+	"github.com/rimsky-yamatov/rubyc/internal/compiler"
 )
 
 const version = "0.1.0"
