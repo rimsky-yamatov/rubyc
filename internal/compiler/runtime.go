@@ -49,7 +49,7 @@ static Value hash_of(long len, ...){
 }
 static char *dup(const char*s){char*r=malloc(strlen(s)+1);strcpy(r,s);return r;}
 static int RUBYC_UNUSED truth(Value v){return v.kind != 2 && (v.kind != 0 || v.n != 0) && (v.kind != 3 || v.s != 0) && (v.kind != 4 || v.s != 0);}
-static char *text(Value v){char b[64];if(v.kind==1)return dup(v.s);if(v.kind==2)return dup("");if(v.kind==3){return dup("[array]");}if(v.kind==4){return dup("{hash}");}snprintf(b,sizeof b,"%ld",v.n);return dup(b);}
+static char *text(Value v){char b[64];if(v.kind==1)return dup(v.s);if(v.kind==2)return dup("");if(v.kind==3)return dup("[array]");if(v.kind==4)return dup("{hash}");snprintf(b,sizeof b,"%ld",v.n);return dup(b);}
 static void out(Value v,int nl){if(v.kind==1)fputs(v.s,stdout);else if(v.kind==2)fputs("nil",stdout);else if(v.kind==3){Array *a=(Array *)v.s;fputs("[",stdout);for(long i=0;i<a->len;i++){if(i)fputs(", ",stdout);out(a->items[i],0);}fputs("]",stdout);}else if(v.kind==4){Hash *h=(Hash *)v.s;fputs("{",stdout);for(long i=0;i<h->len;i++){if(i)fputs(", ",stdout);out(h->keys[i],0);fputs("=>",stdout);out(h->values[i],0);}fputs("}",stdout);}else printf("%ld",v.n);if(nl)putchar('\n');}
 static Value RUBYC_UNUSED add(Value a,Value b){if(!a.kind&&!b.kind)return num(a.n+b.n);char *as=text(a),*bs=text(b),*r=malloc(strlen(as)+strlen(bs)+1);strcpy(r,as);strcat(r,bs);return str(r);}
 static int RUBYC_UNUSED eq(Value a,Value b){if(a.kind!=b.kind)return 0;return a.kind==1?strcmp(a.s,b.s)==0:a.kind==2||a.n==b.n;}
@@ -73,6 +73,7 @@ static Value index(Value a, Value idx){
                 return h->values[i];
             }
         }
+        return nil();
     }
     return nil();
 }
